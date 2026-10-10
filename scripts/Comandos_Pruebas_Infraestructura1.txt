@@ -1,0 +1,53 @@
+INFRAESTRUCTURA 1 - COMANDOS DE PRUEBA
+Oliver Eliam Aquino Paulino | Matricula 2024-1571
+Los comandos se ejecutan en las consolas indicadas. FortiGate SOLO GUI.
+No se incluyen contrasenas.
+
+SW1-USUARIOS:
+show vlan brief
+show interfaces trunk
+show port-security
+show running-config
+
+SW2-DMZ:
+show vlan brief
+show port-security
+show running-config
+
+USER-PC-1 (VLAN 10):
+ip -4 addr show eth0
+ip route
+busybox nc -w 5 10.15.72.4 22
+
+USER-PC-2 (VLAN 20):
+ip -4 addr show eth0
+ip route
+busybox wget -S -O /dev/null http://10.15.72.3/
+ssh oliver@10.15.72.4
+
+WEB-CAJA (10.15.72.2):
+ip -4 addr show eth0
+apk update
+busybox wget -T 8 -S -O /dev/null http://1.1.1.1/
+
+WEB-INVENTARIO (10.15.72.3):
+ip -4 addr show eth0
+
+DB-SERVER (10.15.72.4):
+ip -4 addr show eth0
+mariadb -e "SELECT nombre,precio,stock FROM redes1571.productos;"
+mariadb -e "SELECT * FROM redes1571.ventas;"
+
+FORTIGATE (interfaz grafica):
+Network > Interfaces
+Policy & Objects > Firewall Policy
+Security Profiles > Web Filter
+Log & Report > Forward Traffic
+Log & Report > Web Filter
+
+Resultados observados:
+- La VLAN 10 visualiza la pagina de violacion al intentar visitar Inventario.
+- La VLAN 20 puede iniciar SSH hacia el servidor de base de datos.
+- Las peticiones de Internet no autorizado desde DMZ aparecen DENY en logs.
+- Caja registra una venta y MariaDB almacena el movimiento.
+IMPORTANTE: errores de DNS/timeout por si solos no demuestran bloqueo; revisar logs.
