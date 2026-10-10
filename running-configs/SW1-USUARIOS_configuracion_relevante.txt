@@ -1,0 +1,71 @@
+# Extracto del show running-config de SW1-USUARIOS
+# Evidencia de configuracion. Sin hashes, claves ni MAC sticky.
+# No es un respaldo completo ni un script de restauracion.
+
+hostname SW1-USUARIOS
+service password-encryption
+no ip domain-lookup
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+
+interface GigabitEthernet0/0
+ description TRUNK-HACIA-FORTIGATE-PORT2
+ switchport trunk allowed vlan 10,20
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 999
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface GigabitEthernet0/1
+ description USUARIO-VLAN10
+ switchport access vlan 10
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security mac-address sticky
+ switchport port-security
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet0/2
+ description USUARIO-VLAN20
+ switchport access vlan 20
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security mac-address sticky
+ switchport port-security
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet0/3
+ description PUERTO-NO-UTILIZADO
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+!
+interface GigabitEthernet1/0
+ description WINDOWS-PRUEBA-VLAN10
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/1
+ description CLOUD-WINDOWS-VLAN10
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast edge
+!
+! Gi1/2 y Gi1/3 permanecen sin configuracion adicional.
+! Gi1/0 y Gi1/1 fueron puertos de prueba y no tienen Port-Security.
+banner motd ^CACCESO SOLO AUTORIZADO^C
+line con 0
+ exec-timeout 5 0
+ logging synchronous
+ login local
+line vty 0 4
+ exec-timeout 5 0
+ login local
+ transport input none
