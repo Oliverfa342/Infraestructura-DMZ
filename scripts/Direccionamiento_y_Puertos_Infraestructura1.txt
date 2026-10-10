@@ -1,0 +1,43 @@
+INFRAESTRUCTURA 1 - DIRECCIONAMIENTO Y PUERTOS
+Matricula 2024-1571
+
+REDES
+VLAN 10 Usuarios : 10.15.71.0/25   Gateway 10.15.71.1
+VLAN 20 Usuarios : 10.15.71.128/25 Gateway 10.15.71.129
+VLAN 30 DMZ      : 10.15.72.0/28   Gateway FortiGate port3 10.15.72.1
+
+DHCP EN FORTIGATE
+VLAN 10: 10.15.71.2 - 10.15.71.126
+VLAN 20: 10.15.71.130 - 10.15.71.254
+Duracion de concesion: 86400 segundos
+
+DIRECCIONES OBSERVADAS
+USER-PC-1 VLAN 10  : 10.15.71.2/25
+USER-PC-2 VLAN 20  : 10.15.71.130/25
+WEB-CAJA           : 10.15.72.2/28
+WEB-INVENTARIO     : 10.15.72.3/28
+DB-SERVER          : 10.15.72.4/28
+FortiGate port1 GUI: 192.168.200.2/24
+FortiGate port4 WAN: DHCP (en una captura 192.168.42.2/24)
+
+SW1-USUARIOS
+Gi0/0  : trunk 802.1Q a FortiGate port2 (VLAN 10,20; nativa 999)
+Gi0/1  : USER-PC-1 / VLAN 10
+Gi0/2  : USER-PC-2 / VLAN 20
+Gi0/3  : VLAN 999, shutdown
+Gi1/0  : puerto temporal Windows de prueba VLAN 10
+Gi1/1  : puerto temporal Cloud Windows VLAN 10
+Gi1/2-3: sin uso/configuracion adicional
+
+SW2-DMZ
+Gi0/0: acceso VLAN 30 hacia FortiGate port3
+Gi0/1: WEB-CAJA
+Gi0/2: WEB-INVENTARIO
+Gi0/3: DB-SERVER
+Gi1/0-3: sin uso/configuracion adicional
+
+PUERTOS DE SERVICIO
+HTTP: TCP/80 (Caja, Inventario)
+HTTPS: TCP/443 (accesos definidos en politicas web; repositorio Alpine)
+SSH: TCP/22 (permitido desde VLAN 20, denegado VLAN 10)
+MariaDB: TCP/3306 (servicio interno de base de datos)
