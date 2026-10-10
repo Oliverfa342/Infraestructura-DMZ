@@ -1,0 +1,62 @@
+# Extracto del show running-config de SW2-DMZ
+# Evidencia de configuracion. Sin hashes, claves ni MAC sticky.
+# No es un respaldo completo ni un script de restauracion.
+
+hostname SW2-DMZ
+service password-encryption
+no ip domain-lookup
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+
+interface GigabitEthernet0/0
+ description HACIA-FORTIGATE-PORT3
+ switchport access vlan 30
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/1
+ description WEB-SERVER-CAJA
+ switchport access vlan 30
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security mac-address sticky
+ switchport port-security
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet0/2
+ description WEB-SERVER-INVENTARIO
+ switchport access vlan 30
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security mac-address sticky
+ switchport port-security
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet0/3
+ description DB-SERVER
+ switchport access vlan 30
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security mac-address sticky
+ switchport port-security
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+! Gi1/0 - Gi1/3 permanecen sin configuracion adicional.
+banner motd ^CACCESO SOLO AUTORIZADO^C
+line con 0
+ exec-timeout 5 0
+ logging synchronous
+ login local
+line vty 0 4
+ exec-timeout 5 0
+ login local
+ transport input none
